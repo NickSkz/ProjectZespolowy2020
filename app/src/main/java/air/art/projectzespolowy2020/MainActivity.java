@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    Button settingsButton;
+    Button connectionSettingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +28,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Switch to new settings activity
-        settingsButton = (Button) findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
+        connectionSettingsButton = (Button) findViewById(R.id.connectionSettings_button);
+        connectionSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, Settings.class));
+                startActivity(new Intent(MainActivity.this, ConnectionSettings.class));
             }
         });
 
@@ -41,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
         int REQUEST_ENABLE_BT = 1;
 
         //Check whether bluetooth is supported on a device
-        if(BtAdSingleton.bluetoothAdapter != null) {
+        if(BtAdPseudoSingleton.bluetoothAdapter != null) {
             //If not enabled, enable it
-            if (!BtAdSingleton.bluetoothAdapter.isEnabled()) {
+            if (!BtAdPseudoSingleton.bluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }

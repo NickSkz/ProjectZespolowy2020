@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Settings">
+            android:name=".ConnectionSettings">
         </activity>
     </application>
 

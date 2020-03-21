@@ -6,11 +6,11 @@ import android.bluetooth.BluetoothAdapter;
  * Created by skubi on 18.03.2020.
  */
 
-class BtAdSingleton {
+final class BtAdPseudoSingleton{
     //Initiate BluetoothAdapter, that represents device Bluetooth radio (one for entire system)
     static final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-    private BtAdSingleton(){
+    private BtAdPseudoSingleton(){
 
     }
 }

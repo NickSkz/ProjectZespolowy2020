@@ -11,13 +11,13 @@
         layout="@layout/toolbar"/>
 
     <Button
-        android:text="SETTINGS"
+        android:text="CONNECTION SETTINGS"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/settings_button"
-        android:background="@mipmap/ic_launcher" />
+        android:id="@+id/connectionSettings_button"
+        android:background="@android:color/darker_gray" />
 
 </RelativeLayout>
