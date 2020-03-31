@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+/* Gruppen-Projekt 2020, M. Skubisz, S. Witusiak
+   Die Applikation, die Information von die Sensoren ein hebt
+*/
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
