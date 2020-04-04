@@ -1,7 +1,11 @@
 package air.art.projectzespolowy2020;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -32,12 +36,13 @@ public class MainActivity extends AppCompatActivity {
 
         //Switch to new settings activity
         connectionSettingsButton = (Button) findViewById(R.id.connectionSettings_button);
-        connectionSettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ConnectionSettings.class));
-            }
-        });
+        connectionSettingsButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ConnectionSettings.class)));
+
+        int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+
+        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        BtAdPseudoSingleton.bluetoothAdapter = bluetoothManager.getAdapter();
 
 
         //BluetoothAdapter, that represents device's Bluetooth radio (one for entire system)

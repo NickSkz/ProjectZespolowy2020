@@ -29,11 +29,11 @@
         android:id="@+id/linearLayout_connbtns">
 
         <Button
-            android:text="SHOW PAIRED DEVICES"
+            android:id="@+id/paired_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/paired_button"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="SCAN" />
 
         <Button
             android:text="DISCOVER DEVICE"
