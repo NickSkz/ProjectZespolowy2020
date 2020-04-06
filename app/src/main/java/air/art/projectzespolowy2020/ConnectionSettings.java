@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
@@ -57,6 +58,19 @@ public class ConnectionSettings extends AppCompatActivity {
         //Initialize pairedButton and attach listener to it
         scanButton = (Button) findViewById(R.id.paired_button);
         scanButton.setOnClickListener((view) -> findPairedDevices());
+
+        mainLstView.setOnItemClickListener((parent, view, position, id) ->
+        {
+            String name = (String) parent.getItemAtPosition(position);
+
+            if(name.startsWith("HBracelet-3B5")) {
+                Intent connServiceIntent = new Intent(this, ConnectionService.class);
+                startService(connServiceIntent);
+            }else{
+                Toast.makeText(this, "Unknown Device", Toast.LENGTH_LONG).show();
+                Log.i(TAG, name);
+            }
+        });
     }
 
     private boolean mScanning;
