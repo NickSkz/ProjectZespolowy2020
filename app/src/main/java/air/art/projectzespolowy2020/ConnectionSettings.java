@@ -2,10 +2,14 @@ package air.art.projectzespolowy2020;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +45,8 @@ public class ConnectionSettings extends AppCompatActivity {
     //Scanner used for detecting devices
     final BluetoothLeScanner BLEScanner = BtAdPseudoSingleton.bluetoothAdapter.getBluetoothLeScanner();
 
+    Intent connServiceIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +67,30 @@ public class ConnectionSettings extends AppCompatActivity {
 
         mainLstView.setOnItemClickListener((parent, view, position, id) ->
         {
+            //stop service if already running in bg (if someone swaps device on the list)
+            if(connServiceIntent != null)
+                stopService(connServiceIntent);
+
             String name = (String) parent.getItemAtPosition(position);
 
-            if(name.startsWith("HBracelet-3B5")) {
-                Intent connServiceIntent = new Intent(this, ConnectionService.class);
+            //If someone chooses bracelet from devices -  HBracelet...
+            if(name.startsWith("HBracelet")) {
+                String[] deviceName = name.split("RSSI");
+                Log.d(TAG, deviceName[0]);
+
+                /*
+                for(BluetoothDevice item : BLEDevices){
+
+                    if(item.getName() != null){
+                        if(item.getName().equals(deviceName[0]));
+                           BtAdPseudoSingleton.device = item;                                 //IF NOT DO THE OTHER WAY IN SCAN METHOD
+                    }
+                }
+                 */
+
+
+                //start bg service if someone presses our Bracelet
+                connServiceIntent = new Intent(this, ConnectionService.class);
                 startService(connServiceIntent);
             }else{
                 Toast.makeText(this, "Unknown Device", Toast.LENGTH_LONG).show();
@@ -84,6 +110,10 @@ public class ConnectionSettings extends AppCompatActivity {
 
     //Method that starts scanning - after SCAN_PERIOD, break scanning
     private void scanLeDevice(final boolean enable) {
+
+        if(connServiceIntent != null)
+            stopService(connServiceIntent);
+
         if (enable) {
             // Stops scanning after a pre-defined scan period, add this to message queue (its still UI Thread!).
             handler.postDelayed(() -> {
@@ -115,6 +145,9 @@ public class ConnectionSettings extends AppCompatActivity {
                     //Add to the list view stuff that hasnt appeared earlier (add to LV if its possible to add smth to the HashSet)
                     if (BLEDevices.add(result.getDevice())) {
                         if (result.getDevice().getName() != null) {
+                            if (result.getDevice().getName().startsWith("HBracelet"))
+                                BtAdPseudoSingleton.device = result.getDevice();             //TODO Do it more elegant way!
+
                             //Add device name + signal strength
                             lstDevices.add(result.getDevice().getName() + " RSSI: " + result.getRssi());
                             lstAdapter.notifyDataSetChanged();
@@ -147,4 +180,6 @@ public class ConnectionSettings extends AppCompatActivity {
         lstAdapter.notifyDataSetChanged();
         scanLeDevice(true);
     }
+
+
 }
