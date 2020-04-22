@@ -1,0 +1,57 @@
+!!!LOGS FROM AS, TO CHECK WHICH CHARACTERISTIC CHANGE OVER TIME!!!
+
+
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 00002a00-0000-1000-8000-00805f9b34fb enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [72, 66, 114, 97, 99, 101, 108, 101, 116, 45, 51, 66, 53, 0]
+I/ConnectionService: ***************************************************************************
+D/Surface: Surface::disconnect(this=0x7f41c5ae00,api=1)
+D/IMGSRV: GrallocUnregisterBuffer:1974: bFree=0 ID=102030 ref=1
+D/WindowClient: Remove from mViews: android.widget.LinearLayout{62a1ca8 V.E...... ......ID 0,0-438,88}, this = android.view.WindowManagerGlobal@85d5da0
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 00002a01-0000-1000-8000-00805f9b34fb enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [0, 0]
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 00002a04-0000-1000-8000-00805f9b34fb enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [0, 0, 0, 0, 0, 0, 0, 0]
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ff04-0000-1000-8000-00805f9b34fb enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [72, 66, 114, 97, 99, 101, 108, 101, 116, 45, 51, 66, 53]
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ffd2-0000-1000-8000-00805f9b34fb enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [32, 16, 5, 1, 93, -75]
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ffd3-0000-1000-8000-00805f9b34fb enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [-54, 67]
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ffd4-0000-1000-8000-00805f9b34fb enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [36, 45]
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ffd5-0000-1000-8000-00805f9b34fb enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [0, 0]
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000fff1-0000-1000-8000-00805f9b34fb enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [1]
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT BABY******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 00006587-3c17-d293-8e48-14fe2e4da212 enable: true
+D/ConnectionService: Format UINT8
+I/ConnectionService: Raw bytes to string baby!: [-16]
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: Service destroyed!

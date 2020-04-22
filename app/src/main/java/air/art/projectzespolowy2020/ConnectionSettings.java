@@ -182,4 +182,43 @@ public class ConnectionSettings extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Register receiver to be responsive to certain actions
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectionService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(ConnectionService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(ConnectionService.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(ConnectionService.ACTION_DATA_AVAILABLE);
+        registerReceiver(mGattUpdateReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mGattUpdateReceiver);
+    }
+
+    //Reciever to handle broadcasts from connection service
+    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            final String action = intent.getAction();
+
+            if (ConnectionService.ACTION_GATT_CONNECTED.equals(action)) {
+                Log.d(TAG, "Connected! - Action in the reciever");
+            } else if (ConnectionService.ACTION_GATT_DISCONNECTED.equals(action)) {
+
+            } else if (ConnectionService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+
+            } else if (ConnectionService.ACTION_DATA_AVAILABLE.equals(action)) {
+
+            }
+        }
+    };
+
 }
