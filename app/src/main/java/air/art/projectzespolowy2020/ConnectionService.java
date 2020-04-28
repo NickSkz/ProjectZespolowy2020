@@ -1,6 +1,6 @@
 package air.art.projectzespolowy2020;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -9,17 +9,18 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
-import android.content.Context;
+import android.os.Binder;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 
-import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -30,16 +31,7 @@ import static android.bluetooth.BluetoothAdapter.STATE_DISCONNECTED;
 * Class that handles connection with the band +? reads data
 * It runs on a new background thread (IntentService, NOT Service), in order not to overload UI Thread.
 */
-
-
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
-public class ConnectionService extends IntentService {
+public class ConnectionService extends Service {
 
     static final String TAG =  "ConnectionService";
 
@@ -51,15 +43,6 @@ public class ConnectionService extends IntentService {
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "air.art.projectzespolowy2020.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "air.art.projectzespolowy2020.extra.PARAM2";
-
-    public ConnectionService() {
-        super("ConnectionService");
-    }
-
-
-
-
-
 
     //Declare Bluetooth Gatt instance
     private BluetoothGatt bluetoothGatt;
@@ -82,104 +65,77 @@ public class ConnectionService extends IntentService {
     //Handler to put messages on UI Thread
     Handler handler = new Handler(Looper.getMainLooper());
 
-
     /*************************************TEST*****************************/
     List<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics;
     /**********************************************************************/
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionFoo(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, ConnectionService.class);
-        intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
+    //Override onBind - mandatory
+    private final IBinder mBinder = new LocalBinder();
 
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, ConnectionService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
+    public class LocalBinder extends Binder {
+        ConnectionService getService() {
+            return ConnectionService.this;
+        }
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-
-        //Connect to GATT server
-        bluetoothGatt = BtAdPseudoSingleton.device.connectGatt(this, false, gattCallback);
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
 
 
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
-            }
-        }
+    //On startService()
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        //Run this on a new thread - not to overload UI Thread
+        Thread t = new Thread(){
+            @Override
+            public void run() {
+                //Connect to GATT server
+                bluetoothGatt = BtAdPseudoSingleton.device.connectGatt(getApplicationContext(), false, gattCallback);
 
-        //Gett all services and characteristics
-        displayGattServices(bluetoothGatt.getServices());
-
-
-        //Read them all
-        for(int i = 0; i < mGattCharacteristics.size(); ++i){
-            for(BluetoothGattCharacteristic item : mGattCharacteristics.get(i)){
-                bluetoothGatt.readCharacteristic(item);
-
-                //TODO THIS IS TEMPORARY ABYSMAL SOLUTION!
-                //This is the key to all of previous problemos - wait till it reads characteristic
-                //If We dont wait previous reading operations will fail due to readCharacteristic is asonchronous - only one will be sucessful
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+                //Gatt all services and characteristics
+                displayGattServices(bluetoothGatt.getServices());
+
+
+                //Read them all
+                for(int i = 0; i < mGattCharacteristics.size(); ++i){
+                    for(BluetoothGattCharacteristic item : mGattCharacteristics.get(i)){
+                        bluetoothGatt.readCharacteristic(item);
+
+                        //TODO THIS IS TEMPORARY ABYSMAL SOLUTION!
+                        //This is the key to all of previous problemos - wait till it reads characteristic
+                        //If We dont wait previous reading operations will fail due to readCharacteristic is asonchronous - only one will be sucessful
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                /*
+                while(true) {
+                    bluetoothGatt.readCharacteristic(bluetoothGatt.getService(UUID.fromString("0000d0ff-3c17-d293-8e48-14fe2e4da212")).getCharacteristic(UUID.fromString("0000ffd3-0000-1000-8000-00805f9b34fb")));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                */
             }
-        }
-    }
+        };
+        t.start();
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+        return super.onStartCommand(intent, flags, startId);
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
 
@@ -202,6 +158,7 @@ public class ConnectionService extends IntentService {
                         );
 
                         //If connected - discover devices
+                        //If connected - discover devices
                         Log.i(TAG, "Attempting to start service discovery:" +
                                 bluetoothGatt.discoverServices());
 
@@ -215,7 +172,7 @@ public class ConnectionService extends IntentService {
                 }
 
                 @Override
-                // New services discovered
+                //New services discovered
                 //perform action on discovery
                 public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                     //If discovery succeed
@@ -242,7 +199,7 @@ public class ConnectionService extends IntentService {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         //Perform action connected with it + send read characteristic
 
-                        Log.i(TAG, "******************************THIS IS IT BABY******************************");
+                        Log.i(TAG, "******************************THIS IS IT******************************");
                         bluetoothGatt.setCharacteristicNotification(characteristic, true);
 
                         //We need to set notification when particular value changes
@@ -254,6 +211,9 @@ public class ConnectionService extends IntentService {
                             }
                         broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
                         Log.i(TAG, "***************************************************************************\n");
+                    }else{
+                        Log.i(TAG, "WRONG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        Log.i(TAG, Arrays.toString(characteristic.getValue()));
                     }
                 }
 
@@ -262,6 +222,7 @@ public class ConnectionService extends IntentService {
                 public void onCharacteristicChanged(BluetoothGatt gatt,
                                                     BluetoothGattCharacteristic characteristic) {
                     broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+                    Log.i(TAG, "THINGS CHANGE!");
                     handler.post(() ->
                             Toast.makeText(getApplicationContext(),  "Andrew Golota!", Toast.LENGTH_LONG).show()
                     );
@@ -288,29 +249,20 @@ public class ConnectionService extends IntentService {
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
 
-        //get in what format datas are passed
-        int flag = characteristic.getProperties();
-        int format = -1;
-
-
-        //its binary value - determnie based on that
-        if((flag & 0x01) != 0){
-            format = BluetoothGattCharacteristic.FORMAT_SINT16;
-            Log.d(TAG, "Format UINT16.");
-        }
-        else{
-            format = BluetoothGattCharacteristic.FORMAT_UINT8;
-            Log.d(TAG, "Format UINT8");
-        }
-
-        //final int info = characteristic.getIntValue(format, 1);
-        //final String sfno = characteristic.getStringValue(1);
-
-        //Log.i(TAG,  String.format("Recieved int data: %d", info));
-        //Log.i(TAG,  "Recieved string data: " + sfno);
-
         //show these bytes
-        Log.i(TAG, "Raw bytes to string baby!: " + Arrays.toString(characteristic.getValue()));
+        byte[] data = characteristic.getValue();
+        final StringBuilder stringBuilder = new StringBuilder(data.length);
+        for(byte i : data)
+            stringBuilder.append(String.format("%02X ", i));
+
+        Log.i(TAG, "Service it belongs to: " + characteristic.getService().getUuid());
+
+        Log.i(TAG, "Raw bytes!: " + stringBuilder.toString());
+
+        Log.i(TAG, "String value: " + characteristic.getStringValue(0));
+
+        Log.i(TAG, "Properties: " + Integer.toBinaryString(characteristic.getProperties()));
+        Log.i(TAG, "Permissions: " + Integer.toBinaryString(characteristic.getPermissions()));
 
         final Intent intent = new Intent(action);
         sendBroadcast(intent);
@@ -343,6 +295,7 @@ public class ConnectionService extends IntentService {
                         gattCharacteristics) {
                     if(gattCharacteristic == null)
                         continue;
+
                     charas.add(gattCharacteristic);
                     Log.i(TAG, gattCharacteristic.getUuid().toString());
                 }

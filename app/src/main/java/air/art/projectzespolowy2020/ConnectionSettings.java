@@ -7,10 +7,13 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,6 +49,7 @@ public class ConnectionSettings extends AppCompatActivity {
     final BluetoothLeScanner BLEScanner = BtAdPseudoSingleton.bluetoothAdapter.getBluetoothLeScanner();
 
     Intent connServiceIntent;
+    Thread serviceThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +92,14 @@ public class ConnectionSettings extends AppCompatActivity {
                 }
                  */
 
-
                 //start bg service if someone presses our Bracelet
-                connServiceIntent = new Intent(this, ConnectionService.class);
-                startService(connServiceIntent);
+                serviceThread = new Thread(){
+                    @Override
+                    public void run() {
+                        startService(new Intent(getApplicationContext(), ConnectionService.class));
+                    }
+                };
+                serviceThread.start();
             }else{
                 Toast.makeText(this, "Unknown Device", Toast.LENGTH_LONG).show();
                 Log.i(TAG, name);
@@ -180,7 +188,6 @@ public class ConnectionSettings extends AppCompatActivity {
         lstAdapter.notifyDataSetChanged();
         scanLeDevice(true);
     }
-
 
     @Override
     protected void onResume() {

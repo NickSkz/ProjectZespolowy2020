@@ -1,0 +1,82 @@
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 00002a00-0000-1000-8000-00805f9b34fb enable: true
+I/ConnectionService: Service it belongs to: 00001800-0000-1000-8000-00805f9b34fb
+    Raw bytes!: 48 42 72 61 63 65 6C 65 74 2D 33 42 35 00 
+    String value: HBracelet-3B5��
+I/ConnectionService: Properties: 10
+    Permissions: 0
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 00002a01-0000-1000-8000-00805f9b34fb enable: true
+I/ConnectionService: Service it belongs to: 00001800-0000-1000-8000-00805f9b34fb
+I/ConnectionService: Raw bytes!: 00 00 
+    String value: ����
+    Properties: 10
+    Permissions: 0
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 00002a04-0000-1000-8000-00805f9b34fb enable: true
+I/ConnectionService: Service it belongs to: 00001800-0000-1000-8000-00805f9b34fb
+    Raw bytes!: 00 00 00 00 00 00 00 00 
+I/ConnectionService: String value: ����������������
+    Properties: 10
+    Permissions: 0
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: WRONG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    null
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ff04-0000-1000-8000-00805f9b34fb enable: true
+I/ConnectionService: Service it belongs to: 000001ff-3c17-d293-8e48-14fe2e4da212
+    Raw bytes!: 48 42 72 61 63 65 6C 65 74 2D 33 42 35 
+    String value: HBracelet-3B5
+    Properties: 1010
+    Permissions: 0
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ffd2-0000-1000-8000-00805f9b34fb enable: true
+I/ConnectionService: Service it belongs to: 0000d0ff-3c17-d293-8e48-14fe2e4da212
+    Raw bytes!: 20 10 05 01 5D B5 
+    String value:  ]�
+    Properties: 10
+I/ConnectionService: Permissions: 0
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ffd3-0000-1000-8000-00805f9b34fb enable: true
+I/ConnectionService: Service it belongs to: 0000d0ff-3c17-d293-8e48-14fe2e4da212
+    Raw bytes!: CA 43 
+    String value: �C
+    Properties: 10
+I/ConnectionService: Permissions: 0
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ffd4-0000-1000-8000-00805f9b34fb enable: true
+I/ConnectionService: Service it belongs to: 0000d0ff-3c17-d293-8e48-14fe2e4da212
+I/ConnectionService: Raw bytes!: 24 2D 
+    String value: $-
+    Properties: 10
+    Permissions: 0
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000ffd5-0000-1000-8000-00805f9b34fb enable: true
+I/ConnectionService: Service it belongs to: 0000d0ff-3c17-d293-8e48-14fe2e4da212
+    Raw bytes!: 00 00 
+    String value: ����
+    Properties: 10
+I/ConnectionService: Permissions: 0
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 0000fff1-0000-1000-8000-00805f9b34fb enable: true
+I/ConnectionService: Service it belongs to: 0000d0ff-3c17-d293-8e48-14fe2e4da212
+    Raw bytes!: 01 
+    String value: 
+    Properties: 10
+I/ConnectionService: Permissions: 0
+I/ConnectionService: ***************************************************************************
+I/ConnectionService: ******************************THIS IS IT******************************
+D/BluetoothGatt: setCharacteristicNotification() - uuid: 00006587-3c17-d293-8e48-14fe2e4da212 enable: true
+I/ConnectionService: Service it belongs to: 00006287-3c17-d293-8e48-14fe2e4da212
+    Raw bytes!: F0 
+    String value: �
+    Properties: 10
+    Permissions: 0
+I/ConnectionService: ***************************************************************************
