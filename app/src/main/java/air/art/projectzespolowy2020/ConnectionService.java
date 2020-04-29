@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.IntBinaryOperator;
 
 import static android.bluetooth.BluetoothAdapter.STATE_CONNECTED;
 import static android.bluetooth.BluetoothAdapter.STATE_DISCONNECTED;
@@ -34,15 +35,6 @@ import static android.bluetooth.BluetoothAdapter.STATE_DISCONNECTED;
 public class ConnectionService extends Service {
 
     static final String TAG =  "ConnectionService";
-
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_FOO = "air.art.projectzespolowy2020.action.FOO";
-    private static final String ACTION_BAZ = "air.art.projectzespolowy2020.action.BAZ";
-
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "air.art.projectzespolowy2020.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "air.art.projectzespolowy2020.extra.PARAM2";
 
     //Declare Bluetooth Gatt instance
     private BluetoothGatt bluetoothGatt;
@@ -101,7 +93,7 @@ public class ConnectionService extends Service {
                 }
 
                 //Gatt all services and characteristics
-                displayGattServices(bluetoothGatt.getServices());
+                getServChar(bluetoothGatt.getServices());
 
 
                 //Read them all
@@ -120,17 +112,10 @@ public class ConnectionService extends Service {
                     }
                 }
 
-                /*
-                while(true) {
-                    bluetoothGatt.readCharacteristic(bluetoothGatt.getService(UUID.fromString("0000d0ff-3c17-d293-8e48-14fe2e4da212")).getCharacteristic(UUID.fromString("0000ffd3-0000-1000-8000-00805f9b34fb")));
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                */
+
             }
+
+
         };
         t.start();
 
@@ -157,7 +142,6 @@ public class ConnectionService extends Service {
                             Toast.makeText(getApplicationContext(), "Connected to GATT server!", Toast.LENGTH_LONG).show()
                         );
 
-                        //If connected - discover devices
                         //If connected - discover devices
                         Log.i(TAG, "Attempting to start service discovery:" +
                                 bluetoothGatt.discoverServices());
@@ -199,7 +183,7 @@ public class ConnectionService extends Service {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         //Perform action connected with it + send read characteristic
 
-                        Log.i(TAG, "******************************THIS IS IT******************************");
+                        Log.i(TAG, "******************************CHARACTERISTIC FOUND!******************************");
                         bluetoothGatt.setCharacteristicNotification(characteristic, true);
 
                         //We need to set notification when particular value changes
@@ -210,10 +194,15 @@ public class ConnectionService extends Service {
                                 bluetoothGatt.writeDescriptor(descriptor);
                             }
                         broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-                        Log.i(TAG, "***************************************************************************\n");
+                        Log.i(TAG, "***************************************************************************");
                     }else{
-                        Log.i(TAG, "WRONG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        Log.i(TAG, Arrays.toString(characteristic.getValue()));
+                    Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHARACTERISTIC FOUND!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        Log.i(TAG, "CHAR READ FAILED, STATUS: " + Integer.toBinaryString(status));
+                        Log.i(TAG, "Service UUID: " + characteristic.getService().getUuid());
+                        Log.i(TAG, "Characteristic UUID: " + characteristic.getUuid());
+                        Log.i(TAG, "Properties: " + Integer.toBinaryString(characteristic.getProperties()));
+                        Log.i(TAG, "Bytes to string: " + Arrays.toString(characteristic.getValue()));
+                        Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     }
                 }
 
@@ -222,7 +211,7 @@ public class ConnectionService extends Service {
                 public void onCharacteristicChanged(BluetoothGatt gatt,
                                                     BluetoothGattCharacteristic characteristic) {
                     broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-                    Log.i(TAG, "THINGS CHANGE!");
+                    Log.i(TAG, "THINGS CHANGED!");
                     handler.post(() ->
                             Toast.makeText(getApplicationContext(),  "Andrew Golota!", Toast.LENGTH_LONG).show()
                     );
@@ -270,7 +259,7 @@ public class ConnectionService extends Service {
 
 
     //Add all characteristic to ArrayList
-    private void displayGattServices(List<BluetoothGattService> gattServices) {
+    private void getServChar(List<BluetoothGattService> gattServices) {
 
         //if null return
         if (gattServices == null)
