@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /* Gruppen-Projekt 2020, M. Skubisz, S. Witusiak
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     Button connectionSettingsButton;
+    Button pulseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
         //Switch to new settings activity
         connectionSettingsButton = (Button) findViewById(R.id.connectionSettings_button);
         connectionSettingsButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ConnectionSettings.class)));
+
+        pulseButton = (Button) findViewById(R.id.pulseButton);
+        pulseButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, PulseActivity.class)));
 
         int PERMISSION_REQUEST_COARSE_LOCATION = 1;
         requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);

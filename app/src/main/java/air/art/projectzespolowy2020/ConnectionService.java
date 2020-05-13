@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -23,6 +24,7 @@ import java.util.Arrays;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.IntBinaryOperator;
 
 import static android.bluetooth.BluetoothAdapter.STATE_CONNECTED;
@@ -35,9 +37,6 @@ import static android.bluetooth.BluetoothAdapter.STATE_DISCONNECTED;
 public class ConnectionService extends Service {
 
     static final String TAG =  "ConnectionService";
-
-    //Declare Bluetooth Gatt instance
-    private BluetoothGatt bluetoothGatt;
 
     //Current connection state
     private int connectionState = STATE_DISCONNECTED;
@@ -84,7 +83,7 @@ public class ConnectionService extends Service {
             @Override
             public void run() {
                 //Connect to GATT server
-                bluetoothGatt = BtAdPseudoSingleton.device.connectGatt(getApplicationContext(), false, gattCallback);
+                BtAdPseudoSingleton.bluetoothGatt = BtAdPseudoSingleton.device.connectGatt(getApplicationContext(), false, gattCallback);
 
                 try {
                     Thread.sleep(5000);
@@ -92,32 +91,29 @@ public class ConnectionService extends Service {
                     e.printStackTrace();
                 }
 
-                //Gatt all services and characteristics
-                getServChar(bluetoothGatt.getServices());
+                //get all services to the list
+                getServChar( BtAdPseudoSingleton.bluetoothGatt.getServices());
 
 
-                //Read them all
-                for(int i = 0; i < mGattCharacteristics.size(); ++i){
-                    for(BluetoothGattCharacteristic item : mGattCharacteristics.get(i)){
-                        bluetoothGatt.readCharacteristic(item);
+                //set notification for main channel
+                BluetoothGattCharacteristic chara = BtAdPseudoSingleton.bluetoothGatt.getService(UUID.fromString("000001ff-3c17-d293-8e48-14fe2e4da212")).getCharacteristic(UUID.fromString("0000ff03-0000-1000-8000-00805f9b34fb"));
+                BtAdPseudoSingleton.bluetoothGatt.setCharacteristicNotification(chara, true);
 
-                        //TODO THIS IS TEMPORARY ABYSMAL SOLUTION!
-                        //This is the key to all of previous problemos - wait till it reads characteristic
-                        //If We dont wait previous reading operations will fail due to readCharacteristic is asonchronous - only one will be sucessful
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                //We need to set notification when particular value changes
+                BluetoothGattDescriptor descriptor = chara.getDescriptor(
+                        UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
+                if(descriptor != null) {
+                    descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                    BtAdPseudoSingleton.bluetoothGatt.writeDescriptor(descriptor);
+                    Log.i(TAG, "Notification set!");
                 }
 
 
             }
 
-
         };
         t.start();
+
 
         return super.onStartCommand(intent, flags, startId);
 
@@ -144,7 +140,7 @@ public class ConnectionService extends Service {
 
                         //If connected - discover devices
                         Log.i(TAG, "Attempting to start service discovery:" +
-                                bluetoothGatt.discoverServices());
+                                BtAdPseudoSingleton.bluetoothGatt.discoverServices());
 
                         //if disconnected
                     } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
@@ -165,7 +161,7 @@ public class ConnectionService extends Service {
                         broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
 
                         //Print out UUIDs of detected services
-                        for(BluetoothGattService item : bluetoothGatt.getServices()){
+                        for(BluetoothGattService item : BtAdPseudoSingleton.bluetoothGatt.getServices()){
                             Log.i(TAG, item.getUuid().toString());
                         }
 
@@ -184,14 +180,14 @@ public class ConnectionService extends Service {
                         //Perform action connected with it + send read characteristic
 
                         Log.i(TAG, "******************************CHARACTERISTIC FOUND!******************************");
-                        bluetoothGatt.setCharacteristicNotification(characteristic, true);
+                        BtAdPseudoSingleton.bluetoothGatt.setCharacteristicNotification(characteristic, true);
 
                         //We need to set notification when particular value changes
                             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
                                     UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
                             if(descriptor != null) {
                                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                bluetoothGatt.writeDescriptor(descriptor);
+                                BtAdPseudoSingleton.bluetoothGatt.writeDescriptor(descriptor);
                             }
                         broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
                         Log.i(TAG, "***************************************************************************");
@@ -210,15 +206,22 @@ public class ConnectionService extends Service {
                 // Characteristic notification - when it changes notify user
                 public void onCharacteristicChanged(BluetoothGatt gatt,
                                                     BluetoothGattCharacteristic characteristic) {
-                    broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-                    Log.i(TAG, "THINGS CHANGED!");
-                    handler.post(() ->
-                            Toast.makeText(getApplicationContext(),  "Andrew Golota!", Toast.LENGTH_LONG).show()
-                    );
+
+                    //Get characteristic of incomin' value
+                    Log.i(TAG, "VALUE: " +  Arrays.toString(characteristic.getValue()));
+
+                    //broadcast pulse and oxygen message to corresponding receiver
+                    if(characteristic.getValue().length != 8){
+                        Intent intent = new Intent("GetPulseData");
+                        intent.putExtra(Consts.PULSE, characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,11));
+                        intent.putExtra(Consts.OXYGEN, characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,12));
+                        sendBroadcast(intent);
+                    }
+
                 }
 
-            };
 
+            };
 
     //Destroy service
     @Override

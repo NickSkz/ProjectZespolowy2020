@@ -43,7 +43,6 @@
         android:id="@+id/device_listview"
         android:layout_below="@+id/linearLayout_connbtns"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/connect_button" />
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

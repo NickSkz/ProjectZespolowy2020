@@ -2,6 +2,7 @@ package air.art.projectzespolowy2020;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 
 
 /**
@@ -13,6 +14,9 @@ final class BtAdPseudoSingleton{
     static public BluetoothAdapter bluetoothAdapter;
     //Our main BLE Device - Our chosen bracelet
     static public BluetoothDevice device;
+
+    //Declare Bluetooth Gatt instance
+    static public BluetoothGatt bluetoothGatt;
 
     private BtAdPseudoSingleton(){
 

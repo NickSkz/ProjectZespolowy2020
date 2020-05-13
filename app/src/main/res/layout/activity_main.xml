@@ -8,18 +8,26 @@
     tools:context="air.art.projectzespolowy2020.MainActivity"
     tools:visibility="visible">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+  <include
+      android:id="@+id/toolbar"
+      layout="@layout/toolbar" />
 
-    <Button
-        android:id="@+id/connectionSettings_button"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/darker_gray"
-        android:text="CONNECTION SETTINGS" />
+  <Button
+      android:id="@+id/connectionSettings_button"
+      android:layout_width="wrap_content"
+      android:layout_height="40dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:background="@android:color/darker_gray"
+      android:text="CONNECTION SETTINGS" />
+
+
+  <Button
+      android:id="@+id/pulseButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_alignParentLeft="true"
+      android:text="PULSE + OXYGEN" />
 
 </RelativeLayout>

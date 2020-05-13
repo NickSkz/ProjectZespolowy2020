@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PulseActivity">
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <TableRow
+            android:id="@+id/first_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/bpm_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BPM: "
+                android:textSize="36sp" />
+
+            <TextView
+                android:id="@+id/bpm_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="36sp" />
+        </TableRow>
+
+
+        <TableRow
+            android:id="@+id/second_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/oxygen_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OXYGEN: "
+                android:textSize="36sp" />
+
+            <TextView
+                android:id="@+id/oxygen_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="36sp" />
+        </TableRow>
+
+    </TableLayout>
+
+    <Button
+        android:id="@+id/startMeasureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="START" />
+
+    <Button
+        android:id="@+id/stopMeasureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="STOP"/>
+
+
+</RelativeLayout>
