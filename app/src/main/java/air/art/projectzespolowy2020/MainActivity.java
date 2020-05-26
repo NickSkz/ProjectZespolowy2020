@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button connectionSettingsButton;
     Button pulseButton;
+    Button pressureButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
 
         pulseButton = (Button) findViewById(R.id.pulseButton);
         pulseButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, PulseActivity.class)));
+
+        pressureButton = (Button) findViewById(R.id.pressureButton);
+        pressureButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, BloodPressureActivity.class)));
 
         int PERMISSION_REQUEST_COARSE_LOCATION = 1;
         requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);

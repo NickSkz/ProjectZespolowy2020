@@ -15,35 +15,31 @@ import java.util.UUID;
 
 public class BloodPressureActivity extends AppCompatActivity {
 
-    private static final String TAG = "PulseActivity";
+    private static final String TAG = "BloodPressureActivity";
 
     //TextView to display stuff
-    TextView pulseText, oxygenText;
+    TextView sys_text, dia_text;
 
     //pulse, oxygen, flag = obvious
-    int pulse, oxygen;
-    boolean isMeasuring = false;
+    int systolic, diastolic;
 
     Button startMeasureButton, stopMeasureButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pulse);
+        setContentView(R.layout.activity_blood_pressure);
 
-        pulseText = (TextView) findViewById(R.id.bpm_view);
-        oxygenText = (TextView) findViewById(R.id.oxygen_view);
+        sys_text = (TextView) findViewById(R.id.sys_view);
+        dia_text = (TextView) findViewById(R.id.dia_view);
 
         //On start button write characteristic to WRITE CHANNEL to get stuff from tha bracelet
         startMeasureButton = (Button) findViewById(R.id.startMeasureButton);
         startMeasureButton.setOnClickListener(view -> {
-            if(BtAdPseudoSingleton.bluetoothGatt != null && !isMeasuring){
-                isMeasuring = true;
-                //This is the characteristic
-                BluetoothGattCharacteristic writeChar = BtAdPseudoSingleton.bluetoothGatt.getService(UUID.fromString("000001ff-3c17-d293-8e48-14fe2e4da212")).getCharacteristic(UUID.fromString("0000ff02-0000-1000-8000-00805f9b34fb"));
-                //This is the byte chain that needs to be written to get measurements
-                byte[] test = {(byte)-85, (byte)0, (byte)0, (byte)9, (byte)-63, (byte)123, (byte)0, (byte)64, (byte)5, (byte)0, (byte)6, (byte)0, (byte)4, (byte)0, (byte)1, (byte)5, (byte)2};
-                writeChar.setValue(test);
+            if(BtAdPseudoSingleton.bluetoothGatt != null && !ConnectionSettings.isMeasuring){
+                ConnectionSettings.isMeasuring = true;
+                BluetoothGattCharacteristic writeChar = BtAdPseudoSingleton.bluetoothGatt.getService(Consts.THE_SERVICE).getCharacteristic(Consts.THE_WRITE_CHAR);
+                writeChar.setValue(Consts.openLiveDataStream);
                 BtAdPseudoSingleton.bluetoothGatt.writeCharacteristic(writeChar);
             }
         });
@@ -51,11 +47,10 @@ public class BloodPressureActivity extends AppCompatActivity {
 
         stopMeasureButton = (Button) findViewById(R.id.stopMeasureButton);
         stopMeasureButton.setOnClickListener(view -> {
-            if(BtAdPseudoSingleton.bluetoothGatt != null && isMeasuring){
-                isMeasuring = false;
-                BluetoothGattCharacteristic writeChar = BtAdPseudoSingleton.bluetoothGatt.getService(UUID.fromString("000001ff-3c17-d293-8e48-14fe2e4da212")).getCharacteristic(UUID.fromString("0000ff02-0000-1000-8000-00805f9b34fb"));
-                byte[] test = {(byte)-85, (byte)0, (byte)0, (byte)9, (byte)1, (byte)42, (byte)0, (byte)65, (byte)5, (byte)0, (byte)6, (byte)0, (byte)4, (byte)0, (byte)0, (byte)5, (byte)2};
-                writeChar.setValue(test);
+            if(BtAdPseudoSingleton.bluetoothGatt != null && ConnectionSettings.isMeasuring){
+                ConnectionSettings.isMeasuring = false;
+                BluetoothGattCharacteristic writeChar = BtAdPseudoSingleton.bluetoothGatt.getService(Consts.THE_SERVICE).getCharacteristic(Consts.THE_WRITE_CHAR);
+                writeChar.setValue(Consts.closeLiveDataStream);
                 BtAdPseudoSingleton.bluetoothGatt.writeCharacteristic(writeChar);
             }
         });
@@ -64,7 +59,7 @@ public class BloodPressureActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        registerReceiver(pulseReceiver, new IntentFilter("GetPulseData"));
+        registerReceiver(pulseReceiver, new IntentFilter("GetBloodPressureData"));
     }
 
     @Override
@@ -78,14 +73,14 @@ public class BloodPressureActivity extends AppCompatActivity {
     private BroadcastReceiver pulseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            pulse = intent.getIntExtra(Consts.PULSE,-1);
-            oxygen = intent.getIntExtra(Consts.OXYGEN,-1);
+            systolic = intent.getIntExtra(Consts.SYSTOLIC,-1);
+            diastolic = intent.getIntExtra(Consts.DIASTOLIC,-1);
 
-            Log.i(TAG, "Pulse: " + String.valueOf(pulse));
-            Log.i(TAG, "Oxygen: " + String.valueOf(oxygen));
+            Log.i(TAG, "Systolic: " + String.valueOf(systolic));
+            Log.i(TAG, "Diastolic: " + String.valueOf(diastolic));
 
-            pulseText.setText(String.valueOf(pulse));
-            oxygenText.setText(String.valueOf(oxygen));
+            sys_text.setText(String.valueOf(systolic) + " mmHg");
+            dia_text.setText(String.valueOf(diastolic) + " mmHg");
         }
     };
 }

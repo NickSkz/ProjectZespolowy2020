@@ -30,4 +30,28 @@
       android:layout_alignParentLeft="true"
       android:text="PULSE + OXYGEN" />
 
+  <Button
+      android:id="@+id/pressureButton"
+      android:layout_width="198dp"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginStart="81dp"
+      android:layout_marginEnd="-3dp"
+      android:layout_marginBottom="303dp"
+      android:layout_toEndOf="@+id/pulseButton"
+      android:text="BLOOD PRESSURE" />
+
+  <TextView
+      android:id="@+id/title_textView"
+      android:layout_width="285dp"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginEnd="42dp"
+      android:layout_marginBottom="491dp"
+      android:gravity="center"
+      android:text="BIOSENSOR DATA STEALER"
+      android:textSize="34dp" />
+
 </RelativeLayout>

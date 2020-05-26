@@ -20,9 +20,8 @@ public class PulseActivity extends AppCompatActivity {
     //TextView to display stuff
     TextView pulseText, oxygenText;
 
-    //pulse, oxygen, flag = obvious
+    //pulse, oxygen
     int pulse, oxygen;
-    boolean isMeasuring = false;
 
     Button startMeasureButton, stopMeasureButton;
 
@@ -37,25 +36,21 @@ public class PulseActivity extends AppCompatActivity {
         //On start button write characteristic to WRITE CHANNEL to get stuff from tha bracelet
         startMeasureButton = (Button) findViewById(R.id.startMeasureButton);
         startMeasureButton.setOnClickListener(view -> {
-            if(BtAdPseudoSingleton.bluetoothGatt != null && !isMeasuring){
-                isMeasuring = true;
-                //This is the characteristic
-                BluetoothGattCharacteristic writeChar = BtAdPseudoSingleton.bluetoothGatt.getService(UUID.fromString("000001ff-3c17-d293-8e48-14fe2e4da212")).getCharacteristic(UUID.fromString("0000ff02-0000-1000-8000-00805f9b34fb"));
-                //This is the byte chain that needs to be written to get measurements
-                byte[] test = {(byte)-85, (byte)0, (byte)0, (byte)9, (byte)-63, (byte)123, (byte)0, (byte)64, (byte)5, (byte)0, (byte)6, (byte)0, (byte)4, (byte)0, (byte)1, (byte)5, (byte)2};
-                writeChar.setValue(test);
+            if(BtAdPseudoSingleton.bluetoothGatt != null && !ConnectionSettings.isMeasuring){
+                ConnectionSettings.isMeasuring = true;
+                BluetoothGattCharacteristic writeChar = BtAdPseudoSingleton.bluetoothGatt.getService(Consts.THE_SERVICE).getCharacteristic(Consts.THE_WRITE_CHAR);
+                writeChar.setValue(Consts.openLiveDataStream);
                 BtAdPseudoSingleton.bluetoothGatt.writeCharacteristic(writeChar);
             }
         });
 
-
+        //On close write characteristic that stops live measure
         stopMeasureButton = (Button) findViewById(R.id.stopMeasureButton);
         stopMeasureButton.setOnClickListener(view -> {
-            if(BtAdPseudoSingleton.bluetoothGatt != null && isMeasuring){
-                isMeasuring = false;
-                BluetoothGattCharacteristic writeChar = BtAdPseudoSingleton.bluetoothGatt.getService(UUID.fromString("000001ff-3c17-d293-8e48-14fe2e4da212")).getCharacteristic(UUID.fromString("0000ff02-0000-1000-8000-00805f9b34fb"));
-                byte[] test = {(byte)-85, (byte)0, (byte)0, (byte)9, (byte)1, (byte)42, (byte)0, (byte)65, (byte)5, (byte)0, (byte)6, (byte)0, (byte)4, (byte)0, (byte)0, (byte)5, (byte)2};
-                writeChar.setValue(test);
+            if(BtAdPseudoSingleton.bluetoothGatt != null && ConnectionSettings.isMeasuring){
+                ConnectionSettings.isMeasuring = false;
+                BluetoothGattCharacteristic writeChar = BtAdPseudoSingleton.bluetoothGatt.getService(Consts.THE_SERVICE).getCharacteristic(Consts.THE_WRITE_CHAR);
+                writeChar.setValue(Consts.closeLiveDataStream);
                 BtAdPseudoSingleton.bluetoothGatt.writeCharacteristic(writeChar);
             }
         });
@@ -84,8 +79,8 @@ public class PulseActivity extends AppCompatActivity {
             Log.i(TAG, "Pulse: " + String.valueOf(pulse));
             Log.i(TAG, "Oxygen: " + String.valueOf(oxygen));
 
-            pulseText.setText(String.valueOf(pulse));
-            oxygenText.setText(String.valueOf(oxygen));
+            pulseText.setText(String.valueOf(pulse) + " BPM");
+            oxygenText.setText(String.valueOf(oxygen) + "%");
         }
     };
 

@@ -34,6 +34,8 @@ public class ConnectionSettings extends AppCompatActivity {
 
     private static final String TAG = "ConnSettingsActivity";
 
+    public static boolean isMeasuring;
+
     private Button scanButton;
     private ListView mainLstView;
 

@@ -96,7 +96,7 @@ public class ConnectionService extends Service {
 
 
                 //set notification for main channel
-                BluetoothGattCharacteristic chara = BtAdPseudoSingleton.bluetoothGatt.getService(UUID.fromString("000001ff-3c17-d293-8e48-14fe2e4da212")).getCharacteristic(UUID.fromString("0000ff03-0000-1000-8000-00805f9b34fb"));
+                BluetoothGattCharacteristic chara = BtAdPseudoSingleton.bluetoothGatt.getService(Consts.THE_SERVICE).getCharacteristic(Consts.THE_NOTIFY_CHAR);
                 BtAdPseudoSingleton.bluetoothGatt.setCharacteristicNotification(chara, true);
 
                 //We need to set notification when particular value changes
@@ -211,12 +211,16 @@ public class ConnectionService extends Service {
                     Log.i(TAG, "VALUE: " +  Arrays.toString(characteristic.getValue()));
 
                     //broadcast pulse and oxygen message to corresponding receiver
-                    if(characteristic.getValue().length != 8){
+                    if(characteristic.getValue().length == 16){
                         Intent intent = new Intent("GetPulseData");
-                        Log.i(TAG, "Blood Pressure: Systolic: " + characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,14) + ", Diastolic: " + Math.abs(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,13)));
                         intent.putExtra(Consts.PULSE, characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,11));
                         intent.putExtra(Consts.OXYGEN, characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,12));
                         sendBroadcast(intent);
+
+                        Intent pIntent = new Intent("GetBloodPressureData");
+                        pIntent.putExtra(Consts.SYSTOLIC, characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,14));
+                        pIntent.putExtra(Consts.DIASTOLIC, characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,13));
+                        sendBroadcast(pIntent);
                     }
 
                 }
