@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import java.util.UUID;
 
-public class PulseActivity extends AppCompatActivity {
+public class BloodPressureActivity extends AppCompatActivity {
 
     private static final String TAG = "PulseActivity";
 
@@ -88,5 +88,4 @@ public class PulseActivity extends AppCompatActivity {
             oxygenText.setText(String.valueOf(oxygen));
         }
     };
-
 }

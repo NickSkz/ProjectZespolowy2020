@@ -213,6 +213,7 @@ public class ConnectionService extends Service {
                     //broadcast pulse and oxygen message to corresponding receiver
                     if(characteristic.getValue().length != 8){
                         Intent intent = new Intent("GetPulseData");
+                        Log.i(TAG, "Blood Pressure: Systolic: " + characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,14) + ", Diastolic: " + Math.abs(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,13)));
                         intent.putExtra(Consts.PULSE, characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,11));
                         intent.putExtra(Consts.OXYGEN, characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8,12));
                         sendBroadcast(intent);
