@@ -10,7 +10,7 @@ import android.bluetooth.BluetoothGatt;
  */
 
 final class BtAdPseudoSingleton{
-    //Initiate BluetoothAdapter, that represents device Bluetooth radio (one for entire system)
+    //Declare BluetoothAdapter, that represents device Bluetooth radio (one for entire system)
     static public BluetoothAdapter bluetoothAdapter;
     //Our main BLE Device - Our chosen bracelet
     static public BluetoothDevice device;
